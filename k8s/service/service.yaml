@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thumbnail-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thumbnail-app
+  template:
+    metadata:
+      labels:
+        app: thumbnail-app
+    spec:
+      containers:
+        - name: thumbnail-app
+          image: ghcr.io/wesky93/cday_thumbnail_app:0.0.2
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.namespace=thumbnail,service.name=ThumbnailApp"
+            - name: OTEL_EXPORTER_JAEGER_AGENT_HOST
+              value: "jaeger-agent.default.svc.cluster.local"
+            - name: OTEL_EXPORTER_JAEGER_AGENT_PORT
+              value: "6831"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thumbnail-app-srv
+spec:
+  selector:
+    app: thumbnail-app
+  type: LoadBalancer
+  ports:
+    - name: thumbnail-app
+      protocol: TCP
+      port: 80
+      targetPort: 80
+
+

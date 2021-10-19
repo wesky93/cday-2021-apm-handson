@@ -4,7 +4,6 @@ import tempfile
 from io import BytesIO
 from uuid import uuid4
 
-import redis
 import requests
 import smartcrop
 from PIL import Image
@@ -22,8 +21,6 @@ REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
 REDIS_DB = os.environ.get('REDIS_DB', 0)
 
 BUCKET_NAME = os.environ.get('BUCKET_NAME', 'awskrug-cday')
-
-cache = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, )
 
 
 def make_key() -> str:
@@ -82,7 +79,6 @@ def resize(url: str, width: int, height: int):
     return StreamingResponse(BytesIO(raw_img), media_type="image/jpeg")
 
 
-
 @app.get('/smartcrop')
 @trace_function(tracer)
 def smart_crop(url: str, width: int, height: int):
@@ -113,6 +109,7 @@ def file_download(url: str, target_path: str):
                 break
             f.write(block)
     logging.info(f"finished download")
+
 
 @trace_function(tracer)
 def resize_handler(image: Image, width: int, height: int):
