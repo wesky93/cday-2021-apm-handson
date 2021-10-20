@@ -36,7 +36,6 @@ span_processor = BatchSpanProcessor(exporter)
 trace.get_tracer_provider().add_span_processor(span_processor)
 
 
-# 아키텍쳐 https://drive.google.com/file/d/1u2ApjhQQj5ojDUPH0x2w79SAM3BuFVV_/view?usp=sharing
 
 @app.get('/crop')
 def crop(url: str, width: int, height: int):
