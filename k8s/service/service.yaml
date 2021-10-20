@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: thumbnail-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: thumbnail-app
@@ -14,12 +14,14 @@ spec:
     spec:
       containers:
         - name: thumbnail-app
-          image: ghcr.io/wesky93/cday_thumbnail_app:0.0.2
+          image: ghcr.io/wesky93/cday_thumbnail_app:0.0.3
           env:
             - name: ENVIRONMENT
               value: "production"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.namespace=thumbnail,service.name=ThumbnailApp"
+            - name: OTEL_TRACES_EXPORTER
+              value: "jaeger_thrift"
             - name: OTEL_EXPORTER_JAEGER_AGENT_HOST
               value: "jaeger-agent.default.svc.cluster.local"
             - name: OTEL_EXPORTER_JAEGER_AGENT_PORT
