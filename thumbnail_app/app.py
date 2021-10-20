@@ -10,7 +10,6 @@ from PIL import Image
 from fastapi import FastAPI
 from opentelemetry import trace
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from starlette.responses import StreamingResponse
 
@@ -185,6 +184,3 @@ def save_to_jpeg(image):
     with BytesIO() as f:
         image.save(f, format='JPEG')
         return f.getvalue()
-
-
-FastAPIInstrumentor.instrument_app(app)
