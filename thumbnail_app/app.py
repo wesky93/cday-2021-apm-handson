@@ -10,7 +10,6 @@ from PIL import Image
 from fastapi import FastAPI
 from opentelemetry import trace
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
-from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from starlette.responses import StreamingResponse
 
@@ -28,7 +27,6 @@ def make_key() -> str:
 
 
 app = FastAPI()
-trace.set_tracer_provider(TracerProvider())
 tracer = trace.get_tracer(__name__)
 
 exporter = JaegerExporter()
@@ -36,9 +34,9 @@ span_processor = BatchSpanProcessor(exporter)
 trace.get_tracer_provider().add_span_processor(span_processor)
 
 
-# 아키텍쳐 https://drive.google.com/file/d/1u2ApjhQQj5ojDUPH0x2w79SAM3BuFVV_/view?usp=sharing
 
 @app.get('/crop')
+@trace_function(tracer)
 def crop(url: str, width: int, height: int):
     with tracer.start_as_current_span('crop') as span:
         span.set_attributes(dict(
